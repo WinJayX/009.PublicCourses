@@ -1,0 +1,37 @@
+# 部署应用使用的是YAML
+# k8s部署一个应用 pod
+# POD一般管理一个调用链的所有容器
+# 控制器
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-pod
+spec:
+  selector:
+    matchLabels:
+      app: test
+  template:
+    metadata:
+      labels:
+        app: test
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+
+
+
+# DevOps
+jenkins部署应用
+
+1、部署编译型应用
+  1、编译环境：mvn
+    git:
+        分支：一般需要被修改
+        标签：一般不修改
+  2、部署环境：tomcat
+
+
+2、部署解释型语言
+
+

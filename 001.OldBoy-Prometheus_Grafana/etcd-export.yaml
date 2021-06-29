@@ -1,0 +1,90 @@
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: etcd-monitor
+  namespace: kube-system
+  labels:
+    k8s: etcd-monitor
+subsets:
+  - addresses:
+      - ip: "192.168.12.13"
+    ports:
+      - port: 2379
+        name: etcd
+        protocol: TCP
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: etcd-monitor
+  namespace: kube-system
+  labels:
+    k8s: etcd-monitor
+spec:
+  ports:
+    - port: 2379
+      targetPort: 2379
+      protocol: TCP
+      name: etcd
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: etcd
+  name: etcd
+  namespace: monitoring
+spec:
+  endpoints:
+    - interval: 30s
+      port: etcd
+      scheme: https
+      tlsConfig:
+        caFile: /etc/prometheus/secrets/etcd-certs/ca.crt
+        certFile: /etc/prometheus/secrets/etcd-certs/peer.crt
+        keyFile: /etc/prometheus/secrets/etcd-certs/peer.key
+        insecureSkipVerify: true
+  selector:
+    matchLabels:
+      k8s: etcd-monitor
+  namespaceSelector:
+    matchNames:
+      - kube-system
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  labels:
+    prometheus: k8s
+  name: k8s
+  namespace: monitoring
+spec:
+  alerting:
+    alertmanagers:
+      - name: alertmanager-main
+        namespace: monitoring
+        port: web
+  image: quay.io/prometheus/prometheus:v2.15.2
+  nodeSelector:
+    kubernetes.io/os: linux
+  podMonitorNamespaceSelector: {}
+  podMonitorSelector: {}
+  replicas: 1
+  resources:
+    requests:
+      memory: 400Mi
+  ruleSelector:
+    matchLabels:
+      prometheus: k8s
+      role: alert-rules
+  securityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000
+  serviceAccountName: prometheus-k8s
+  serviceMonitorNamespaceSelector: {}
+  serviceMonitorSelector: {}
+  version: v2.15.2
+  secrets:
+    - etcd-certs
+

@@ -1,0 +1,68 @@
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: java-svc
+  namespace: default
+  labels:
+    k8s: java
+subsets:
+  - addresses:
+      - ip: "192.168.12.50"
+    ports:
+      - port: 8761
+    name: java-svc
+    protocol: TCP
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: java-svc
+  namespace: default
+  labels:
+    k8s: java
+spec:
+  ports:
+    - port: 8761
+      targetPort: 8761
+      protocol: TCP
+      name: java-svc
+---
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  labels:
+    prometheus: k8s
+  name: k8s
+  namespace: monitoring
+spec:
+  alerting:
+    alertmanagers:
+      - name: alertmanager-main
+        namespace: monitoring
+        port: web
+  image: quay.io/prometheus/prometheus:v2.15.2
+  nodeSelector:
+    kubernetes.io/os: linux
+  podMonitorNamespaceSelector: {}
+  podMonitorSelector: {}
+  replicas: 1
+  resources:
+    requests:
+      memory: 400Mi
+  ruleSelector:
+    matchLabels:
+      prometheus: k8s
+      role: alert-rules
+  securityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000
+  serviceAccountName: prometheus-k8s
+  serviceMonitorNamespaceSelector: {}
+  serviceMonitorSelector: {}
+  version: v2.15.2
+
+
+

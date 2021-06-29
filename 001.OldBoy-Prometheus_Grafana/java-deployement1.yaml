@@ -1,0 +1,36 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: java
+  namespace: default
+  labels:
+    k8s: java
+spec:
+  selector:
+    matchLabels:
+      k8s: java
+  template:
+    metadata:
+      labels:
+        k8s: java
+    spec:
+      containers:
+        - name: java
+          image: alvinos/java:v2
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: default
+  name: java
+  labels:
+    app.kubernetes.io/component: exporter
+    app.kubernetes.io/name: java-exporter
+    app.kubernetes.io/part-of: kube-prometheus
+spec:
+  ports:
+    - port: 8761
+      targetPort: 8761
+      name: java
+  selector:
+    k8s: java

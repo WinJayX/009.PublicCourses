@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: java
+  namespace: default
+spec:
+  rules:
+  - host: "java.test.com"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: java
+            port:
+              number: 8761
+# https://cloud.tencent.com/act/cps/redirect?redirect=10488&cps_key=bddba58f33af3bda39303f45be9d6614&from=activity
