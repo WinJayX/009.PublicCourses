@@ -1,0 +1,26 @@
+################################################################################
+# 此 .gitignore 文件为所需忽略文件。
+################################################################################
+
+# Libraries
+
+
+# Shared objects (inc. Windows DLLs)
+
+
+# Executables
+#*.exe
+
+# Metadata
+#-*.aliases
+#-*.lvlps
+#-*.tar.gz
+#-*.tar
+#-*.zip
+#-*.rar
+*.DS_Store
+*._*
+# 忽略的目录
+/001.OldBoy-Prometheus_Grafana/.idea/
+*.exe
+*.rpm
