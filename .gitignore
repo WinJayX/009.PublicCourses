@@ -18,21 +18,10 @@
 #-*.tar
 #-*.zip
 #-*.rar
+
+# 忽略的目录
 *.DS_Store
 *._*
-# 忽略的目录
-/001.OldBoy-Prometheus_Grafana/.idea/
 *.exe
 *.rpm
-
-# 默认忽略的文件
-/.idea/*
-/shelf/
-/workspace.xml
-# CodeStream ignored files
-/../../009.PublicCourses\.idea/codestream.xml
-# 数据源本地存储已忽略文件
-/dataSources/
-/dataSources.local.xml
-# 基于编辑器的 HTTP 客户端请求
-/httpRequests/
+.idea
